@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
@@ -48,9 +49,24 @@ public class TransactionTest {
     }
 
     @Test
-    void shouldUseDefaultCategoryValueIfCategoryIsNull() {
+    void shouldUseDefaultCategoryValueWhenCategoryIsNull() {
         Transaction transaction = Transaction.builder().category(null).date(LocalDate.now()).amount(BigDecimal.valueOf(50)).build();
         assertThat(transaction.getCategory()).isEqualTo(TransactionCategory.OTHER);
+    }
+
+    @Test
+    void shouldUseProvidedId() {
+        UUID id = UUID.randomUUID();
+
+        Transaction transaction = Transaction.builder().id(id).category(TransactionCategory.INCOME).date(LocalDate.now()).amount(BigDecimal.valueOf(50)).build();
+
+        assertThat(transaction.getId()).isEqualTo(id);
+    }
+
+    @Test
+    void shouldGenerateRandomUUIDValueWhenIdIsNull() {
+        Transaction transaction = Transaction.builder().category(TransactionCategory.INCOME).date(LocalDate.now()).amount(BigDecimal.valueOf(50)).build();
+        assertThat(transaction.getId()).isNotNull();
     }
 
     @Test

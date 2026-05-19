@@ -29,8 +29,9 @@ public class Transaction {
                 throw new IllegalArgumentException("[SYSTEM]: Date must be before now");
             }
             TransactionCategory finalCategory = category == null ? TransactionCategory.OTHER : category;
+            UUID finalId = id == null ? UUID.randomUUID() : id;
 
-            return new Transaction(id, description, amount, date, finalCategory);
+            return new Transaction(finalId, description, amount, date, finalCategory);
         }
     }
 }
