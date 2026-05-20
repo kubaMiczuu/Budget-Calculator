@@ -76,4 +76,10 @@ public class TransactionTest {
         assertThat(transaction.getDate()).isEqualTo(LocalDate.now());
         assertThat(transaction.getCategory()).isEqualTo(TransactionCategory.OTHER);
     }
+
+    @Test
+    void shouldReturnCorrectIsExpenseValue() {
+        Transaction transaction = Transaction.builder().category(TransactionCategory.FOOD).amount(BigDecimal.valueOf(50)).date(LocalDate.now()).build();
+        assertThat(transaction.isExpense()).isTrue();
+    }
 }
