@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class FileTransactionRepository implements TransactionRepository {
@@ -39,6 +40,16 @@ public class FileTransactionRepository implements TransactionRepository {
         } catch (IOException e) {
             throw new RuntimeException("[SYSTEM]: Cannot read transactions file", e);
         }
+    }
+
+    @Override
+    public Optional<Transaction> findById(UUID id) {
+        return findAll().stream().filter(t -> t.getId().equals(id)).findFirst();
+    }
+
+    @Override
+    public void update(Transaction transaction) {
+        save(transaction);
     }
 
     @Override
