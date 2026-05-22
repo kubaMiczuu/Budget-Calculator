@@ -12,7 +12,7 @@ import java.util.Map;
 public class MonthlyBudget {
     private final int year;
     private final int month;
-    private final Map<TransactionCategory, BigDecimal> budget;
+    private final BigDecimal limit;
 
     public static class MonthlyBudgetBuilder {
         public MonthlyBudget build() {
@@ -23,7 +23,7 @@ public class MonthlyBudget {
                 throw new IllegalArgumentException("[SYSTEM]: Month must be between 0 and 12");
             }
 
-            return new MonthlyBudget(year,month,budget);
+            return new MonthlyBudget(year,month, limit);
         }
     }
 }
