@@ -1,5 +1,7 @@
 package org.jakubmiczek.service;
 
+import lombok.Getter;
+import org.jakubmiczek.exceptions.BudgetException;
 import org.jakubmiczek.exceptions.TransactionNotFoundException;
 import org.jakubmiczek.model.MonthlyBudget;
 import org.jakubmiczek.model.Transaction;
@@ -7,11 +9,12 @@ import org.jakubmiczek.repository.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
+@Getter
 public class TransactionService {
 
     private final TransactionRepository repository;
@@ -27,7 +30,8 @@ public class TransactionService {
 
     public void addTransaction(Transaction transaction) {
         repository.save(transaction);
-        checkBudgetAlert();
+        checkBudgetAlert().ifPresent(msg -> {throw new BudgetException(msg);
+        });
     }
 
     private Optional<String> checkBudgetAlert() {
@@ -49,20 +53,18 @@ public class TransactionService {
     }
 
     public void deleteTransaction(UUID id) {
-        if(repository.findById(id).isPresent()) {
-            repository.deleteById(id);
-        }
-        else {
-            throw new TransactionNotFoundException(id);
-        }
+        repository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
+        repository.deleteById(id);
     }
 
-    public Transaction findTransaction(UUID id) {
-        return  repository.findById(id).orElse(null);
+    public Optional<Transaction> findTransaction(UUID id) {
+        return repository.findById(id);
     }
 
     public List<Transaction> getTransactions() {
-        return repository.findAll();
+        return repository.findAll().stream()
+                .sorted(Comparator.comparing(Transaction::getDate))
+                .toList();
     }
 
     public void updateTransaction(Transaction transaction) {
